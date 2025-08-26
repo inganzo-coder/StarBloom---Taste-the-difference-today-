@@ -350,25 +350,25 @@
     const RW_FORMATTER = new Intl.NumberFormat('en-RW', {style:'currency', currency:'RWF', maximumFractionDigits:0});
 
     const CATEGORIES = [
-      { id:'classic-beef', title:'Classic Beef', img:'https://images.unsplash.com/photo-1604909052743-84fd2c043518?q=80&w=1200&auto=format&fit=crop', items:[
+      { id:'classic-beef', title:'Classic Beef', img:'images/Classic Beef.jpeg', items:[
         {sku:'BEEF-SGL', name:'Beef Sausage (Single)', price:2000},
         {sku:'BEEF-DBL', name:'Beef Sausage (Double)', price:3500}
       ]},
-      { id:'spicy-pili', title:'Spicy Pili‑Pili', img:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop', items:[
+      { id:'spicy-pili', title:'Spicy Pili‑Pili', img:'images/Spicy Pili‑Pili.jpeg', items:[
         {sku:'PILI-REG', name:'Pili‑Pili Sausage', price:2500},
         {sku:'PILI-CHEESE', name:'Pili‑Pili + Cheese', price:3000}
       ]},
-      { id:'chicken-vienna', title:'Chicken Vienna', img:'https://images.unsplash.com/photo-1544025162-a412ccb59f7c?q=80&w=1200&auto=format&fit=crop', items:[
+      { id:'chicken-vienna', title:'Chicken Vienna', img:'images/Chicken Vienna.jpeg', items:[
         {sku:'CHIK-VIE', name:'Chicken Vienna', price:2200}
       ]},
-      { id:'bratwurst', title:'Bratwurst', img:'https://images.unsplash.com/photo-1616401784845-180882ba9ee0?q=80&w=1200&auto=format&fit=crop', items:[
+      { id:'bratwurst', title:'Bratwurst', img:'images/Bratwurst.jpeg', items:[
         {sku:'BRAT-ORIG', name:'Bratwurst Original', price:3000},
         {sku:'BRAT-XL', name:'Bratwurst XL', price:4500}
       ]},
-      { id:'breakfast', title:'Breakfast Links', img:'https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1200&auto=format&fit=crop', items:[
+      { id:'breakfast', title:'Breakfast Links', img:'images/Breakfast Links.jpeg', items:[
         {sku:'BRKFST-SET', name:'Breakfast Set (2 links + roll)', price:3000}
       ]},
-      { id:'family', title:'Family Packs', img:'https://images.unsplash.com/photo-1515215158059-48f2f8ff1d84?q=80&w=1200&auto=format&fit=crop', items:[
+      { id:'family', title:'Family Packs', img:'images/Family Packs.jpeg', items:[
         {sku:'FAM-BOX', name:'Family Box (8 sausages + chips + 4 drinks)', price:14000}
       ]},
       { id:'sides', title:'Sides', img:'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1200&auto=format&fit=crop', items:[
@@ -382,8 +382,8 @@
     ];
 
     const DEALS = [
-      {sku:'DEAL-ALLSTAR', name:'All‑Star Sausage Box', desc:'2 Bratwurst + 2 Beef + Chips + 2 Drinks', price:14000, img:'https://images.unsplash.com/photo-1544025163-41930c4426a6?q=80&w=1200&auto=format&fit=crop'},
-      {sku:'DEAL-WINGMAN', name:'Wingman Pair', desc:'2 Pili‑Pili + Large Chips', price:8500, img:'https://images.unsplash.com/photo-1610440042657-c9b4c56e1b8b?q=80&w=1200&auto=format&fit=crop'}
+      {sku:'DEAL-ALLSTAR', name:'All‑Star Sausage Box', desc:'2 Bratwurst + 2 Beef + Chips + 2 Drinks', price:14000, img:'images/All‑Star Sausage Box.jpeg'},
+      {sku:'DEAL-WINGMAN', name:'Wingman Pair', desc:'2 Pili‑Pili + Large Chips', price:8500, img:'images/Wingman Pair.jpeg'}
     ];
 
     let cart = [];
@@ -455,7 +455,7 @@
         subtotal += x.price * x.qty;
         return `
           <div class="cart-item">
-            <img src="https://images.unsplash.com/photo-1604909052743-84fd2c043518?q=80&w=400&auto=format&fit=crop" alt="${x.name}"/>
+            <img src="images/emoji.jpeg"${x.name}"/>
             <div>
               <div style="font-weight:700">${x.name}</div>
               <div class="muted">${RW_FORMATTER.format(x.price)}</div>
