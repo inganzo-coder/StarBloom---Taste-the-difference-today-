@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarBloom — Taste the difference today!</title>
+  <meta name="description" content="Order fresh, sizzling sausages online. Fast delivery in Kigali. Download a PDF receipt for proof." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#8B4513; /* Saddle brown */
+      --primary-700:#654321; /* Dark brown */
+      --secondary:#2D5016; /* Forest green */
+      --chocolate:#3C1810; /* Dark chocolate */
+      --bg:#1a1410; /* Dark brown background */
+      --card:#2a241f; /* Light brown card */
+      --muted:#a0956b; /* Muted brown */
+      --text:#f5f2e8; /* Cream text */
+      --green:#22c55e;
+      --amber:#f59e0b;
+      --ring:0 0 0 3px rgba(139,69,19,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1200px;margin-inline:auto;padding:0 16px}
+    .btn{display:inline-flex;align-items:center;gap:10px;border:none;border-radius:999px;padding:12px 18px;font-weight:700;background:var(--primary);color:#fff;cursor:pointer;transition:.2s transform,.2s filter}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+    .btn.outline{background:transparent;border:2px solid var(--primary)}
+    .btn.ghost{background:rgba(139,69,19,0.1)}
+    .btn.green{background:var(--secondary)}
+    header{position:sticky;top:0;z-index:50;background:rgba(26,20,16,.85);backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid rgba(245,242,232,0.12)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
+    .brand .logo{width:48px;height:48px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--primary)}
+    .brand .logo img{width:100%;height:100%;object-fit:contain}
+    .nav-links{display:flex;gap:18px;align-items:center}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(245,242,232,0.1);padding:6px 10px;border-radius:999px;font-size:12px}
+    .hero{position:relative;overflow:hidden}
+    .hero-wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:36px 0 18px}
+    .hero h1{font-size:clamp(28px,4vw,48px);line-height:1.02;margin:0 0 12px}
+    .hero p{color:#d6cbb8;margin:0 0 20px}
+    .hero-card{background:linear-gradient(180deg,var(--card) 0%,var(--chocolate) 100%);border:1px solid rgba(245,242,232,0.14);border-radius:20px;padding:18px}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    .grid{display:grid;gap:16px}
+    .categories{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:24px 0}
+    .cat{position:relative;background:var(--card);border:1px solid rgba(245,242,232,0.14);border-radius:18px;overflow:hidden}
+    .cat img{width:100%;height:150px;object-fit:cover;display:block}
+    .cat .info{padding:12px 14px}
+    .cat .title{font-weight:800;margin:0 0 4px}
+    .price{font-weight:800}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .offer{background:linear-gradient(90deg,var(--chocolate),var(--secondary));border:1px dashed rgba(245,242,232,0.2);padding:12px;border-radius:14px;display:flex;align-items:center;gap:12px}
+    .offer svg{flex:0 0 auto;stroke:#f5f2e8}
+    .section-title{display:flex;align-items:baseline;justify-content:space-between;margin-top:10px}
+    .section-title h2{margin:0;font-size:22px}
+    .card{background:var(--card);border:1px solid rgba(245,242,232,0.12);border-radius:18px;padding:16px}
+
+    /* Cart Drawer */
+    .drawer{position:fixed;inset:0;pointer-events:none}
+    .drawer.open{pointer-events:auto}
+    .drawer .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:.2s}
+    .drawer.open .backdrop{opacity:1}
+    .drawer .panel{position:absolute;top:0;right:-420px;width:420px;max-width:100%;height:100%;background:var(--chocolate);box-shadow:-20px 0 60px rgba(0,0,0,.35);transition:.3s;border-left:1px solid rgba(245,242,232,0.1)}
+    .drawer.open .panel{right:0}
+
+    .cart-item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(245,242,232,0.12)}
+    .cart-item img{width:64px;height:64px;border-radius:8px;object-fit:cover}
+    .qty{display:flex;align-items:center;gap:8px}
+    .qty button{width:28px;height:28px;border-radius:6px;border:1px solid rgba(245,242,232,0.25);background:var(--card);color:var(--text)}
+
+    footer{margin-top:40px;border-top:1px solid rgba(245,242,232,0.12);background:var(--chocolate)}
+    footer .cols{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;padding:24px 0}
+    .credits{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(245,242,232,0.1);padding:14px 0;color:#c2b698;font-size:12px}
+
+    /* Form Styles */
+    input, select, textarea {
+      padding: 8px 12px;
+      border: 1px solid rgba(245,242,232,0.25);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--ring);
+    }
+
+    /* Responsive */
+    @media (max-width:900px){
+      .hero-wrap{grid-template-columns:1fr}
+      footer .cols{grid-template-columns:1fr}
+      .nav-links .pill.hide-sm{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">
+          <!-- Logo placeholder - you can replace with actual logo -->
+          <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="images/logo.png">
+            <circle cx="50" cy="50" r="45" fill="var(--primary)" stroke="var(--secondary)" stroke-width="2"/>
+            <text x="50" y="58" font-family="Arial" font-size="24" font-weight="bold" fill="white" text-anchor="middle">SB</text>
+            <path d="M25 35 L75 35 M30 45 L70 45 M35 55 L65 55" stroke="var(--secondary)" stroke-width="2"/>
+          </svg>
+        </div>
+        <div>
+          <div>StarBloom — Taste the difference today!</div>
+          <small class="muted">Kigali • Fast Delivery</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="#menu" class="pill hide-sm">Menu</a>
+        <a href="#deals" class="pill hide-sm">Deals</a>
+        <a href="#how" class="pill hide-sm">How it works</a>
+        <button class="btn" id="openCartBtn" aria-label="Open cart">
+          <!-- cart icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h9l3-7H6.4M7 13L6.4 5M7 13l-2 9h14l-2-9M10 22a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="cartCount">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-wrap">
+        <div>
+          <div class="pill" style="width:max-content">Delivery now available • <span id="deliveryTime" class="muted" style="margin-left:6px">10:00—22:00</span></div>
+          <h1>Sizzle into <span style="color:var(--primary)">flavor</span>. Order freshly grilled sausages delivered across Kigali.</h1>
+          <p>Inspired by modern fast-food to provide the best sausages in Kigali-Rwanda.To get the best service add to cart, checkout via MoMo or cash, and download a PDF receipt.</p>
+          <div class="row">
+            <a class="btn" href="#menu">Order now</a>
+            <button class="btn green" id="findDeals">View deals</button>
+          </div>
+          <div class="badges">
+            <span class="pill">RWF 2,000 Kigali delivery</span>
+            <span class="pill">Pickup: Kacyiru • Downtown • Remera</span>
+            <span class="pill">Avg. 25—40 min</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="offer">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l2.09 6.26H21l-5.17 3.76L17.91 21 12 16.99 6.09 21l2.08-7.98L3 9.26h6.91L12 3z" stroke="currentColor" stroke-opacity=".9"/></svg>
+            <div>
+              <strong>Limited Time:</strong> All-Star Sausage Box — 2 Bratwurst + 2 Beef + Chips + 2 Drinks for <strong>RWF 14,000</strong>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <button class="btn ghost" onclick="quickAddDeal()">Add deal to cart</button>
+            <button class="btn green" onclick="scrollToId('deals')">See more</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu" class="container">
+      <div class="section-title">
+        <h2>Browse Categories</h2>
+        <small class="muted">Classic • Spicy • Family • Sides • Drinks</small>
+      </div>
+      <div class="grid categories" id="categoryGrid">
+        <!-- Cards injected by JS -->
+      </div>
+    </section>
+
+    <section id="deals" class="container">
+      <div class="section-title"><h2>Deals & Combos</h2><small class="muted">Save more when you bundle</small></div>
+      <div class="grid categories" id="dealsGrid"></div>
+    </section>
+
+    <section id="how" class="container" style="margin-top:10px">
+      <div class="card">
+        <div class="section-title"><h2>How it works</h2></div>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+          <div class="card" style="background:var(--chocolate)">
+            <strong>1) Pick & customize</strong>
+            <p class="muted">Tap a category, choose your sausage, sauce and spice. Add to cart.</p>
+          </div>
+          <div class="card" style="background:var(--chocolate)">
+            <strong>2) Checkout</strong>
+            <p class="muted">Enter delivery details. Choose Mobile Money or Cash on Delivery.</p>
+          </div>
+          <div class="card" style="background:var(--chocolate)">
+            <strong>3) Download proof</strong>
+            <p class="muted">Get an on-page receipt. Click <em>Download / Print PDF</em> for records.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container cols">
+      <div>
+        <div class="brand" style="margin-bottom:8px">
+          <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="45" fill="var(--primary)" stroke="var(--secondary)" stroke-width="2"/>
+              <text x="50" y="58" font-family="Arial" font-size="24" font-weight="bold" fill="white" text-anchor="middle">SB</text>
+              <path d="M25 35 L75 35 M30 45 L70 45 M35 55 L65 55" stroke="var(--secondary)" stroke-width="2"/>
+            </svg>
+          </div>
+          <div>
+            <div>StarBloom — Taste the difference today!</div>
+            <small class="muted">Proudly made in Kigali</small>
+          </div>
+        </div>
+        <p class="muted">Open daily 10:00—22:00 • Delivery in Kigali & pick‑up at Kacyiru, Remera, CBD.</p>
+      </div>
+      <div>
+        <div class="row" style="justify-content:flex-end;gap:8px">
+          <a href="#menu" class="btn ghost">Menu</a>
+          <button class="btn" id="openCartBtn2">Cart <span id="cartCount2">0</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="container credits">
+      <span>© <span id="year"></span> StarBloom</span>
+      <span class="muted">2025</span>
+    </div>
+  </footer>
+
+  <!-- Cart Drawer -->
+  <div class="drawer" id="drawer">
+    <div class="backdrop" onclick="toggleDrawer(false)"></div>
+    <aside class="panel" role="dialog" aria-label="Cart panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 14px 0 14px">
+        <h3 style="margin:0">Your Cart</h3>
+        <button class="btn ghost" onclick="toggleDrawer(false)">Close</button>
+      </div>
+      <div id="cartList" style="padding:0 14px 14px 14px;overflow:auto;height:calc(100% - 260px)"></div>
+      <div style="padding:14px;border-top:1px solid rgba(245,242,232,0.12)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="muted">Subtotal</span><strong id="subTotal">RWF 0</strong></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="muted">Delivery</span><span id="deliveryFee">RWF 2,000</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span class="muted">Total</span><strong id="grandTotal">RWF 0</strong></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" onclick="openCheckout()">Checkout</button>
+          <button class="btn outline" onclick="clearCart()">Clear</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Checkout Modal (simple) -->
+  <div class="drawer" id="checkout">
+    <div class="backdrop" onclick="toggleCheckout(false)"></div>
+    <aside class="panel" role="dialog" aria-label="Checkout">
+      <div style="padding:16px;border-bottom:1px solid rgba(245,242,232,0.12);display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Checkout</h3>
+        <button class="btn ghost" onclick="toggleCheckout(false)">Close</button>
+      </div>
+      <div style="padding:16px;overflow:auto;height:calc(100% - 76px)">
+        <form id="checkoutForm" onsubmit="submitOrder(event)">
+          <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+            <div>
+              <label>Full name<br/><input name="name" required placeholder="Your name" style="width:100%"></label>
+            </div>
+            <div>
+              <label>Phone (MoMo)<br/><input name="phone" required placeholder="07XX XXX XXX" style="width:100%"></label>
+            </div>
+            <div>
+              <label>Sector / Area<br/>
+                <select name="area" required style="width:100%">
+                  <option value="Kacyiru">Kacyiru</option>
+                  <option value="Remera">Remera</option>
+                  <option value="Kimironko">Kimironko</option>
+                  <option value="Kiyovu">Kiyovu</option>
+                  <option value="Nyamirambo">Nyamirambo</option>
+                  <option value="Kicukiro">Kicukiro</option>
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Payment<br/>
+                <select name="payment" required style="width:100%">
+                  <option value="MoMo">MTN MoMo</option>
+                  <option value="Cash">Cash on Delivery</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <label>Address / Notes<br/>
+              <textarea name="notes" rows="3" placeholder="House number, landmark, ring bell..." style="width:100%"></textarea>
+            </label>
+          </div>
+          <div class="row" style="margin-top:14px">
+            <button class="btn" type="submit">Place order</button>
+            <button class="btn outline" type="button" onclick="toggleCheckout(false)">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Order Confirmation (printable) -->
+  <template id="receiptTemplate">
+    <div id="receipt" style="font-family:Inter,Arial;margin:0 auto;max-width:700px;background:#fff;color:#111;padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#8B4513,#2D5016);display:grid;place-items:center;color:#fff;font-weight:900">SB</div>
+          <div>
+            <div style="font-weight:800">StarBloom Taste the difference today!</div>
+            <small>Kigali • +250 788 000 000</small>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:800">Order #<span data-field="orderId"></span></div>
+          <small><span data-field="date"></span></small>
+        </div>
+      </div>
+      <hr style="margin:16px 0;border:none;border-top:1px solid #e5e7eb"/>
+      <div>
+        <strong>Customer</strong>
+        <div><span data-field="name"></span> — <span data-field="phone"></span></div>
+        <div><span data-field="area"></span></div>
+        <div style="color:#444" data-field="notes"></div>
+      </div>
+      <h3 style="margin:16px 0 6px">Items</h3>
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="text-align:left;background:#f8fafc">
+            <th style="padding:8px;border:1px solid #e5e7eb">Item</th>
+            <th style="padding:8px;border:1px solid #e5e7eb">Qty</th>
+            <th style="padding:8px;border:1px solid #e5e7eb">Price</th>
+          </tr>
+        </thead>
+        <tbody data-field="items"></tbody>
+      </table>
+      <div style="margin-top:10px;display:flex;justify-content:flex-end;gap:18px">
+        <div>
+          <div>Subtotal: <strong data-field="subtotal"></strong></div>
+          <div>Delivery: <strong>RWF 2,000</strong></div>
+          <div>Total: <strong data-field="total" style="font-size:18px"></strong></div>
+          <div>Payment: <span data-field="payment"></span></div>
+        </div>
+      </div>
+      <hr style="margin:16px 0;border:none;border-top:1px solid #e5e7eb"/>
+      <div style="font-size:12px;color:#444">This is a computer‑generated receipt. For official proof, save as PDF or print. Delivery times vary by area (avg. 25—40 min).</div>
+      <div style="margin-top:8px">
+        <button onclick="window.print()" style="padding:10px 14px;border-radius:8px;border:1px solid #8B4513;background:#8B4513;color:#fff;cursor:pointer">Download / Print PDF</button>
+      </div>
+    </div>
+  </template>
+
+  <script>
+   
+
+    const RW_FORMATTER = new Intl.NumberFormat('en-RW', {style:'currency', currency:'RWF', maximumFractionDigits:0});
+
+    const CATEGORIES = [
+      { id:'classic-beef', title:'Classic Beef', img:'https://images.unsplash.com/photo-1604909052743-84fd2c043518?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'BEEF-SGL', name:'Beef Sausage (Single)', price:2000},
+        {sku:'BEEF-DBL', name:'Beef Sausage (Double)', price:3500}
+      ]},
+      { id:'spicy-pili', title:'Spicy Pili‑Pili', img:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'PILI-REG', name:'Pili‑Pili Sausage', price:2500},
+        {sku:'PILI-CHEESE', name:'Pili‑Pili + Cheese', price:3000}
+      ]},
+      { id:'chicken-vienna', title:'Chicken Vienna', img:'https://images.unsplash.com/photo-1544025162-a412ccb59f7c?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'CHIK-VIE', name:'Chicken Vienna', price:2200}
+      ]},
+      { id:'bratwurst', title:'Bratwurst', img:'https://images.unsplash.com/photo-1616401784845-180882ba9ee0?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'BRAT-ORIG', name:'Bratwurst Original', price:3000},
+        {sku:'BRAT-XL', name:'Bratwurst XL', price:4500}
+      ]},
+      { id:'breakfast', title:'Breakfast Links', img:'https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'BRKFST-SET', name:'Breakfast Set (2 links + roll)', price:3000}
+      ]},
+      { id:'family', title:'Family Packs', img:'https://images.unsplash.com/photo-1515215158059-48f2f8ff1d84?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'FAM-BOX', name:'Family Box (8 sausages + chips + 4 drinks)', price:14000}
+      ]},
+      { id:'sides', title:'Sides', img:'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'CHIPS', name:'Regular Chips', price:1500},
+        {sku:'COLESLAW', name:'Coleslaw', price:1200}
+      ]},
+      { id:'drinks', title:'Drinks', img:'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=1200&auto=format&fit=crop', items:[
+        {sku:'SODA-330', name:'Soda 330ml', price:1000},
+        {sku:'WATER-500', name:'Water 500ml', price:800}
+      ]}
+    ];
+
+    const DEALS = [
+      {sku:'DEAL-ALLSTAR', name:'All‑Star Sausage Box', desc:'2 Bratwurst + 2 Beef + Chips + 2 Drinks', price:14000, img:'https://images.unsplash.com/photo-1544025163-41930c4426a6?q=80&w=1200&auto=format&fit=crop'},
+      {sku:'DEAL-WINGMAN', name:'Wingman Pair', desc:'2 Pili‑Pili + Large Chips', price:8500, img:'https://images.unsplash.com/photo-1610440042657-c9b4c56e1b8b?q=80&w=1200&auto=format&fit=crop'}
+    ];
+
+    let cart = [];
+
+    function saveCart(){ renderCart(); }
+    function addToCart(item){
+      const found = cart.find(x=>x.sku===item.sku);
+      if(found){ found.qty += 1; }
+      else { cart.push({...item, qty:1}); }
+      saveCart();
+    }
+    function removeFromCart(sku){
+      const idx = cart.findIndex(x=>x.sku===sku);
+      if(idx>-1){ cart.splice(idx,1); saveCart(); }
+    }
+    function qty(sku, delta){
+      const it = cart.find(x=>x.sku===sku);
+      if(!it) return;
+      it.qty += delta;
+      if(it.qty<=0){ removeFromCart(sku); } else { saveCart(); }
+    }
+    function clearCart(){ cart.length=0; saveCart(); }
+
+    function renderCategories(){
+      const grid = document.getElementById('categoryGrid');
+      grid.innerHTML = '';
+      CATEGORIES.forEach(cat=>{
+        const el = document.createElement('article');
+        el.className='cat';
+        el.innerHTML = `
+          <img src="${cat.img}" alt="${cat.title}"/>
+          <div class="info">
+            <div class="title">${cat.title}</div>
+            <div class="row">${cat.items.map(it=>`
+              <button class="btn ghost" onclick='addToCart(${JSON.stringify(it)})'>Add ${it.name.split(' ')[0]} — ${RW_FORMATTER.format(it.price)}</button>
+            `).join('')}</div>
+          </div>`;
+        grid.appendChild(el);
+      })
+    }
+
+    function renderDeals(){
+      const grid = document.getElementById('dealsGrid');
+      grid.innerHTML='';
+      DEALS.forEach(d=>{
+        const card = document.createElement('article');
+        card.className='cat';
+        card.innerHTML = `
+          <img src="${d.img}" alt="${d.name}"/>
+          <div class="info">
+            <div class="title">${d.name}</div>
+            <div class="muted">${d.desc}</div>
+            <div class="row" style="margin-top:6px">
+              <button class="btn" onclick='addToCart(${JSON.stringify({sku:d.sku,name:d.name,price:d.price})})'>Add — ${RW_FORMATTER.format(d.price)}</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      })
+    }
+
+    function renderCart(){
+      const list = document.getElementById('cartList');
+      const count = cart.reduce((n,x)=>n+x.qty,0);
+      document.getElementById('cartCount').textContent = count;
+      document.getElementById('cartCount2').textContent = count;
+
+      let subtotal = 0;
+      list.innerHTML = cart.map(x=>{
+        subtotal += x.price * x.qty;
+        return `
+          <div class="cart-item">
+            <img src="https://images.unsplash.com/photo-1604909052743-84fd2c043518?q=80&w=400&auto=format&fit=crop" alt="${x.name}"/>
+            <div>
+              <div style="font-weight:700">${x.name}</div>
+              <div class="muted">${RW_FORMATTER.format(x.price)}</div>
+            </div>
+            <div class="qty">
+              <button onclick="qty('${x.sku}',-1)">-</button>
+              <div>${x.qty}</div>
+              <button onclick="qty('${x.sku}',1)">+</button>
+              <button class="btn ghost" onclick="removeFromCart('${x.sku}')">Remove</button>
+            </div>
+          </div>`;
+      }).join('');
+
+      document.getElementById('subTotal').textContent = RW_FORMATTER.format(subtotal);
+      const total = subtotal + (cart.length?2000:0);
+      document.getElementById('grandTotal').textContent = RW_FORMATTER.format(total);
+    }
+
+    function toggleDrawer(open){
+      const dr = document.getElementById('drawer');
+      dr.classList.toggle('open', open);
+    }
+    function openCheckout(){ toggleDrawer(false); toggleCheckout(true); }
+    function toggleCheckout(open){ document.getElementById('checkout').classList.toggle('open', open); }
+
+    function quickAddDeal(){ addToCart({sku:'DEAL-ALLSTAR', name:'All‑Star Sausage Box', price:14000}); }
+    function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+    function submitOrder(e){
+      e.preventDefault();
+      if(!cart.length){ alert('Your cart is empty.'); return; }
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      const orderId = Math.random().toString(36).slice(2,8).toUpperCase();
+      const subtotal = cart.reduce((n,x)=>n+x.price*x.qty,0);
+      const total = subtotal + 2000;
+
+      // Build receipt DOM from template
+      const tpl = document.getElementById('receiptTemplate').content.cloneNode(true);
+      tpl.querySelector('[data-field="orderId"]').textContent = orderId;
+      tpl.querySelector('[data-field="date"]').textContent = new Date().toLocaleString('en-GB');
+      tpl.querySelector('[data-field="name"]').textContent = data.name;
+      tpl.querySelector('[data-field="phone"]').textContent = data.phone;
+      tpl.querySelector('[data-field="area"]').textContent = data.area;
+      tpl.querySelector('[data-field="payment"]').textContent = data.payment;
+      tpl.querySelector('[data-field="notes"]').textContent = data.notes || '';
+      tpl.querySelector('[data-field="subtotal"]').textContent = RW_FORMATTER.format(subtotal);
+      tpl.querySelector('[data-field="total"]').textContent = RW_FORMATTER.format(total);
+      const tbody = tpl.querySelector('[data-field="items"]');
+      cart.forEach(x=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="padding:8px;border:1px solid #e5e7eb">${x.name}</td><td style="padding:8px;border:1px solid #e5e7eb">${x.qty}</td><td style="padding:8px;border:1px solid #e5e7eb">${RW_FORMATTER.format(x.price * x.qty)}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      // Open receipt in new window to allow Print to PDF
+      const w = window.open('', '_blank');
+      w.document.write('<!doctype html><html><head><title>Receipt</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>');
+      w.document.body.appendChild(tpl);
+      w.document.write('</body></html>');
+      w.document.close();
+      // Optionally auto-open print dialog after a brief delay
+      setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} }, 400);
+
+      // Reset UI
+      clearCart();
+      toggleCheckout(false);
+      alert('Order placed! Your receipt opened in a new tab.');
+    }
+
+    // Wire up
+    document.getElementById('openCartBtn').onclick = ()=>toggleDrawer(true);
+    document.getElementById('openCartBtn2').onclick = ()=>toggleDrawer(true);
+    document.getElementById('findDeals').onclick = ()=>scrollToId('deals');
+
+    // Init
+    renderCategories();
+    renderDeals();
+    renderCart();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
